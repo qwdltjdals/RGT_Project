@@ -1,5 +1,8 @@
 package com.book.controller;
 
+import com.book.dto.ReqAddBookDto;
+import com.book.service.BookService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,14 +10,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/books")
 public class BookController {
 
+    @Autowired
+    private BookService bookService;
+
     // 책 추가 컨트롤러
-    @PostMapping()
-    public ResponseEntity<?> addBook() {
+    @PostMapping("")
+    public ResponseEntity<?> addBook(@RequestBody ReqAddBookDto dto) {
+        bookService.addBook(dto);
         return ResponseEntity.ok().body(true);
     }
 
     // 책 검색 컨트롤러
-    @GetMapping()
+    @GetMapping("")
     public ResponseEntity<?> searchBook() {
         return ResponseEntity.ok().body(null);
     }
