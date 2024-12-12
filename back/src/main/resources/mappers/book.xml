@@ -24,4 +24,15 @@
         where
             id = #{id}
     </delete>
+    <select id="bookDetail" resultType="com.book.entity.Book">
+        select
+            id
+            title
+            author
+            publisher
+            price
+            img
+        where
+            id = #{id}
+    </select>
 </mapper>
