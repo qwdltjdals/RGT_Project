@@ -30,7 +30,7 @@ public class BookController {
     // 책 상세조회 컨트롤러
     @GetMapping("/{id}")
     public ResponseEntity<?> bookDetail(@RequestParam int id) {
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(bookService.bookDetail(id));
     }
 
     // 책 수정 컨트롤러
