@@ -2,9 +2,11 @@ package com.book.controller;
 
 import com.book.dto.Request.ReqAddBookDto;
 import com.book.dto.Request.ReqBookUpdateDto;
+import com.book.dto.Request.ReqBooklistDto;
 import com.book.dto.Request.ReqSearchBookDto;
 import com.book.dto.Response.RespBookPageDto;
 import com.book.dto.Response.RespBookSearchDto;
+import com.book.dto.Response.RespBooklistDto;
 import com.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +28,16 @@ public class BookController {
 
     // 책 목록 컨트롤러
     @GetMapping("")
-    public ResponseEntity<?> loadBooks(ReqBooklistDto dto) {
-        return ResponseEntity.ok().body(null);
+    public ResponseEntity<?> loadBooks(@RequestBody ReqBooklistDto dto) {
+        RespBookPageDto<RespBooklistDto> result = bookService.booklist(dto);
+        return ResponseEntity.ok().body(result);
     }
 
     // 책 검색 컨트롤러
     @PostMapping("/search")
     public ResponseEntity<?> searchBooks(@RequestBody ReqSearchBookDto dto) {
         RespBookPageDto<RespBookSearchDto> result = bookService.searchBooks(dto);
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(result);
     }
 
     // 책 상세조회 컨트롤러
