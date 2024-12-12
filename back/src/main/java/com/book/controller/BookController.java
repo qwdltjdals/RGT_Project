@@ -7,8 +7,10 @@ import com.book.dto.Request.ReqSearchBookDto;
 import com.book.dto.Response.RespBookPageDto;
 import com.book.dto.Response.RespBookSearchDto;
 import com.book.dto.Response.RespBooklistDto;
+import com.book.exception.BookException;
 import com.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +24,12 @@ public class BookController {
     // 책 추가 컨트롤러
     @PostMapping("")
     public ResponseEntity<?> addBook(@RequestBody ReqAddBookDto dto) {
-        bookService.addBook(dto);
-        return ResponseEntity.ok().body(true);
+        try {
+            bookService.addBook(dto);
+            return ResponseEntity.ok().body(true);
+        } catch (BookException e) {
+            return handleBookException(e);
+        }
     }
 
     // 책 목록 컨트롤러
@@ -49,12 +55,26 @@ public class BookController {
     // 책 수정 컨트롤러
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBook(@RequestBody ReqBookUpdateDto dto) {
-        return ResponseEntity.ok().body(bookService.updateBook(dto));
+        try {
+            return ResponseEntity.ok().body(bookService.updateBook(dto));
+        } catch (BookException e) {
+            return handleBookException(e);
+        }
     }
 
     // 책 삭제 컨트롤러
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable int id) {
-        return ResponseEntity.ok().body(bookService.deleteBook(id));
+        try {
+            return ResponseEntity.ok().body(bookService.deleteBook(id));
+        } catch (BookException e) {
+            return handleBookException(e);
+        }
+    }
+
+    // BookException을 처리
+    private ResponseEntity<?> handleBookException(BookException e) {
+        // BookException이 발생하면 400 BAD REQUEST 상태 코드와 메시지를 응답으로 보냄
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

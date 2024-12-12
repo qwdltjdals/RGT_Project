@@ -9,6 +9,7 @@ import com.book.dto.Response.RespBookPageDto;
 import com.book.dto.Response.RespBookSearchDto;
 import com.book.dto.Response.RespBooklistDto;
 import com.book.entity.Book;
+import com.book.exception.BookException;
 import com.book.mapper.BookMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class BookService {
         // 중복 체크 로직
         boolean isDuplicate = bookMapper.isBookDuplicate(dto.getTitle());
         if (isDuplicate) {
-            throw new RuntimeException("이미 존재하는 책입니다: " + dto.getTitle());
+            throw new BookException("이미 존재하는 책입니다: ");
         }
         bookMapper.addBook(dto.toEntity());
     }
@@ -110,11 +111,18 @@ public class BookService {
 
     // 책 수정 서비스
     public int updateBook(ReqBookUpdateDto dto) {
+        // 중복 체크 로직
+        boolean isDuplicate = bookMapper.isBookDuplicate(dto.getTitle());
+        if (isDuplicate) {
+            throw new BookException("이미 존재하는 책입니다: ");
+        }
+
         int successCount = bookMapper.updateBook(dto.toEntity());
 
         if( successCount == 0) {
-            throw new RuntimeException("도서를 수정하는 중 오류가 발생했습니다.");
+            throw new BookException("도서를 수정하는 중 오류가 발생했습니다.");
         }
+
 
         return successCount;
     }
@@ -124,7 +132,7 @@ public class BookService {
         int succeccCount = bookMapper.deleteBook(id);
 
         if(succeccCount == 0) {
-            throw new RuntimeException("도서를 삭제하는 중 오류가 발생했습니다.");
+            throw new BookException("도서를 삭제하는 중 오류가 발생했습니다.");
         }
 
         return succeccCount;
