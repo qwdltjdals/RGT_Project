@@ -6,6 +6,22 @@
 
     <insert id="addBook">
         insert into book_tb
-        values(0, #{title}, #{author}, #{publisher}, #{img})
+        values(0, #{title}, #{author}, #{publisher}, #{price}, #{img})
     </insert>
+    <update id="updateBook">
+        update book_tb
+        set
+            title = #{title}
+            author = #{author}
+            publisher = #{publisher}
+            price = #{price}
+            img = #{img}
+        where
+            id = #{id}
+    </update>
+    <delete id="deleteBook">
+        delete from book_tb
+        where
+            id = #{id}
+    </delete>
 </mapper>

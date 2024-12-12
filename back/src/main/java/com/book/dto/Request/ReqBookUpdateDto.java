@@ -1,23 +1,24 @@
-package com.book.dto;
+package com.book.dto.Request;
 
 import com.book.entity.Book;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
-public class ReqAddBookDto {
+public class ReqBookUpdateDto {
+    private int id;
     private String title;
     private String author;
     private String publisher;
+    private int price;
     private String img;
-
 
     public Book toEntity() {
         return Book.builder()
+                .id(id)
                 .title(title)
                 .author(author)
                 .publisher(publisher)
+                .price(price)
                 .img(img)
                 .build();
     }
