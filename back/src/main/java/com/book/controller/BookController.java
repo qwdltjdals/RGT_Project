@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/books")
+@CrossOrigin(origins = "*")  // 모든 출처에서 접근을 허용
 public class BookController {
 
     @Autowired
@@ -34,8 +35,9 @@ public class BookController {
 
     // 책 목록 컨트롤러
     @GetMapping("")
-    public ResponseEntity<?> loadBooks(@RequestBody ReqBooklistDto dto) {
-        RespBookPageDto<RespBooklistDto> result = bookService.booklist(dto);
+    public ResponseEntity<?> loadBooks(@RequestParam int page, @RequestParam int limit) {
+        RespBookPageDto<RespBooklistDto> result = bookService.booklist(page, limit);
+        System.out.println("aaa");
         return ResponseEntity.ok().body(result);
     }
 

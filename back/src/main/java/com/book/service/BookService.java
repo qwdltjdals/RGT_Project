@@ -34,13 +34,15 @@ public class BookService {
     }
 
     // 책 목록 조회 서비스
-    public RespBookPageDto<RespBooklistDto> booklist(ReqBooklistDto dto) {
+    public RespBookPageDto<RespBooklistDto> booklist(int page, int limit) {
 
-        int offset = (dto.getPage() - 1) * dto.getLimit();
+        int offset = (page - 1) * limit;
 
-        List<Book> books = bookMapper.booklist(offset, dto.getLimit());
+        List<Book> books = bookMapper.booklist(offset, limit);
+        Book searchBook = Book.builder().build();
 
-        int totalCount = bookMapper.countBooks(dto.toEntity());
+        int totalCount = bookMapper.countBooks(searchBook);
+        System.out.println(page);
 
         List<RespBooklistDto> booklist = books.stream()
                 .map(book -> RespBooklistDto.builder()
@@ -52,15 +54,18 @@ public class BookService {
                         .img(book.getImg())
                         .build())
                 .collect(Collectors.toList());
+        System.out.println(booklist);
+        System.out.println("Total count: " + totalCount);  // 총 책의 수 출력
+        System.out.println("Book list: " + booklist);     // 책 목록 출력
 
-        int pageCount = (int) Math.ceil((double) totalCount / (double) dto.getLimit());
+        int pageCount = (int) Math.ceil((double) totalCount / (double) limit);
 
 
         return RespBookPageDto.<RespBooklistDto>builder()
                 .books(booklist)
                 .totalCount(totalCount)
                 .pageCount(pageCount)
-                .pageSize(dto.getLimit())
+                .pageSize(limit)
                 .build();
     }
 
