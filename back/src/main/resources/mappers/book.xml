@@ -38,18 +38,43 @@
             id = #{id}
     </select>
     <select id="searchBooks" resultType="com.book.entity.Book">
-        SELECT *
-            FROM book_tb
+        select *
+        FROM book_tb
         WHERE
+        <if test="book.title != null and book.title != ''">
             title LIKE CONCAT('%', #{book.title}, '%')
-            AND author LIKE CONCAT('%', #{book.author}, '%')
+        </if>
+        <if test="book.author != null and book.author != ''">
+            <if test="book.title != null and book.title != ''"> AND </if>
+            author LIKE CONCAT('%', #{book.author}, '%')
+        </if>
         LIMIT #{limit} OFFSET #{offset}
     </select>
+
     <select id="countBooks" resultType="java.lang.Integer">
-        SELECT COUNT(*)
-            FROM book_tb
-        WHERE
-            title LIKE CONCAT('%', #{book.title}, '%')
-            AND author LIKE CONCAT('%', #{book.author}, '%')
+        select COUNT(*)
+        FROM book_tb
+        <where>
+            <if test="book.title != null and book.title != ''">
+                AND title LIKE CONCAT('%', #{book.title}, '%')
+            </if>
+            <if test="book.author != null and book.author != ''">
+                AND author LIKE CONCAT('%', #{book.author}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="booklist" resultType="com.book.entity.Book">
+        select
+            id, title, author, publisher, price, img
+        from
+            book_tb
+        limit #{limit} OFFSET #{offset}
+    </select>
+    <select id="isBookDuplicate" resultType="java.lang.Boolean">
+        SELECT EXISTS (
+        SELECT 1
+        FROM book_tb
+        WHERE title = #{title}
+        )
     </select>
 </mapper>
