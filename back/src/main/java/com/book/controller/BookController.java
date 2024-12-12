@@ -2,6 +2,9 @@ package com.book.controller;
 
 import com.book.dto.Request.ReqAddBookDto;
 import com.book.dto.Request.ReqBookUpdateDto;
+import com.book.dto.Request.ReqSearchBookDto;
+import com.book.dto.Response.RespBookPageDto;
+import com.book.dto.Response.RespBookSearchDto;
 import com.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +24,22 @@ public class BookController {
         return ResponseEntity.ok().body(true);
     }
 
-    // 책 검색 컨트롤러
+    // 책 목록 컨트롤러
     @GetMapping("")
-    public ResponseEntity<?> searchBook() {
+    public ResponseEntity<?> loadBooks(ReqBooklistDto dto) {
+        return ResponseEntity.ok().body(null);
+    }
+
+    // 책 검색 컨트롤러
+    @PostMapping("/search")
+    public ResponseEntity<?> searchBooks(@RequestBody ReqSearchBookDto dto) {
+        RespBookPageDto<RespBookSearchDto> result = bookService.searchBooks(dto);
         return ResponseEntity.ok().body(null);
     }
 
     // 책 상세조회 컨트롤러
     @GetMapping("/{id}")
-    public ResponseEntity<?> bookDetail(@RequestParam int id) {
+    public ResponseEntity<?> bookDetail(@PathVariable int id) {
         return ResponseEntity.ok().body(bookService.bookDetail(id));
     }
 
@@ -41,7 +51,7 @@ public class BookController {
 
     // 책 삭제 컨트롤러
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBook(@RequestParam int id) {
+    public ResponseEntity<?> deleteBook(@PathVariable int id) {
         return ResponseEntity.ok().body(bookService.deleteBook(id));
     }
 }

@@ -2,13 +2,17 @@ package com.book.service;
 
 import com.book.dto.Request.ReqAddBookDto;
 import com.book.dto.Request.ReqBookUpdateDto;
+import com.book.dto.Request.ReqSearchBookDto;
 import com.book.dto.Response.RespBookDetailDto;
+import com.book.dto.Response.RespBookPageDto;
+import com.book.dto.Response.RespBookSearchDto;
 import com.book.entity.Book;
 import com.book.mapper.BookMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -19,6 +23,38 @@ public class BookService {
     // 책 추가 서비스
     public void addBook(ReqAddBookDto dto) {
         bookMapper.addBook(dto.toEntity());
+    }
+
+    // 책 검색 서비스
+    public RespBookPageDto<RespBookSearchDto> searchBooks(ReqSearchBookDto dto) {
+        if (dto.getPage() < 1) dto.setPage(1);  // page가 1 이하일 경우 기본값을 1로 설정
+        if (dto.getLimit() < 1) dto.setLimit(10);  // limit이 1 이하일 경우 기본값을 10으로 설정
+
+        int offset = (dto.getPage() - 1) * dto.getLimit();
+
+        List<Book> books = bookMapper.searchBooks(dto.toEntity(), offset, dto.getLimit());
+
+        int totalCount = bookMapper.countBooks(dto.toEntity());
+
+        List<RespBookSearchDto> searchBooks = books.stream()
+                .map(book -> RespBookSearchDto.builder()
+                        .id(book.getId())
+                        .title(book.getTitle())
+                        .author(book.getAuthor())
+                        .price(book.getPrice())
+                        .publisher(book.getPublisher())
+                        .img(book.getImg())
+                        .build())
+                .collect(Collectors.toList());
+
+        int pageCount = (int) Math.ceil((double) totalCount / (double) dto.getLimit());
+
+        return RespBookPageDto.<RespBookSearchDto>builder()
+                .books(searchBooks)
+                .totalCount(totalCount)
+                .pageCount(pageCount)
+                .pageSize(dto.getLimit())
+                .build();
     }
 
     // 책 상세조회 서비스

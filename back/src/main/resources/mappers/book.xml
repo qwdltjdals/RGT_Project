@@ -11,10 +11,10 @@
     <update id="updateBook">
         update book_tb
         set
-            title = #{title}
-            author = #{author}
-            publisher = #{publisher}
-            price = #{price}
+            title = #{title},
+            author = #{author},
+            publisher = #{publisher},
+            price = #{price},
             img = #{img}
         where
             id = #{id}
@@ -26,13 +26,30 @@
     </delete>
     <select id="bookDetail" resultType="com.book.entity.Book">
         select
-            id
-            title
-            author
-            publisher
-            price
+            id,
+            title,
+            author,
+            publisher,
+            price,
             img
+        from
+            book_tb
         where
             id = #{id}
+    </select>
+    <select id="searchBooks" resultType="com.book.entity.Book">
+        SELECT *
+            FROM book_tb
+        WHERE
+            title LIKE CONCAT('%', #{book.title}, '%')
+            AND author LIKE CONCAT('%', #{book.author}, '%')
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <select id="countBooks" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+            FROM book_tb
+        WHERE
+            title LIKE CONCAT('%', #{book.title}, '%')
+            AND author LIKE CONCAT('%', #{book.author}, '%')
     </select>
 </mapper>
