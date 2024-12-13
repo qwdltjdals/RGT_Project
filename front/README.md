@@ -1,70 +1,200 @@
-# Getting Started with Create React App
+# 도서 관리 서비스 입니다.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+사용 프로그램
 
-## Available Scripts
+Visual Studio Code, InteliJ
 
-In the project directory, you can run:
+사용 언어
 
-### `npm start`
+JAVA, JavaScript, CSS, React, SpringBoot, HTML
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 주요 기능 설명
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. 도서 목록 전체 조회 기능
+2. 도서 목록 검색 기능(개발 중)
+3. 도서 추가 기능
+4. 도서 수정 기능
+5. 도서 삭제 기능
+6. 도서 상세보기 기능
+7. 페이지네이션 기능
+8. 백엔드(배포가 시간이 걸려 깃허브 링크로 대체합니다)
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+처음 사이트를 들어가면 전체 책이 조회가 됩니다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+그 후에 검색을 통하여 제목, 저자로 책을 검색할 수 있습니다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+책의 정보가 잘못 입력되어 있는 경우, 수정 가능하며, 책 이름에 대한 중복체크도 가능합니다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+책의 추가, 수정은 리엑트 모달로 띄웠습니다.
 
-### `npm run eject`
+책을 삭제할 수도 있습니다.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+책 상세보기 기능도 지원하고 있습니다.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 주요코드
 
-## Learn More
+```javascript
+    // 전체조회하는 쿼리
+    const { data: allBooks, isError, isLoading: isLoadingAll, refetch } = useQuery(
+        ["getBookList", page, limit],
+        async () => {
+            return await instance.get("api/books", {
+                params: { page, limit }
+            });
+        },
+        {
+            enabled: !isSearching,
+            retry: 0,
+            refetchOnWindowFocus: false
+        }
+    );
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+```javascript
+    // 삭제 쿼리
+    const deleteBook = useMutation(
+        async (id) => {
+            return await instance.delete(`api/books/${id}`)
+        },
+        {
+            onSuccess: () => {
+                refetch();
+            },
+            onError: (error) => {
+                console.error("삭제 실패:", error);
+                alert("삭제에 실패했습니다. 다시 시도해 주세요.");
+            }
+        }
+    )
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```java
+    // 책 추가 컨트롤러
+    @PostMapping("")
+    public ResponseEntity<?> addBook(@RequestBody ReqAddBookDto dto) {
+        try {
+            bookService.addBook(dto);
+            return ResponseEntity.ok().body(true);
+        } catch (BookException e) {
+            return handleBookException(e);
+        }
+    }
+```
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
+```java
+    // 책 삭제 컨트롤러
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteBook(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok().body(bookService.deleteBook(id));
+        } catch (BookException e) {
+            return handleBookException(e);
+        }
+    }
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```java
+    // BookException을 처리
+    private ResponseEntity<?> handleBookException(BookException e) {
+        // BookException이 발생하면 400 BAD REQUEST 상태 코드와 메시지를 응답으로 보냄
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+```
 
-### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+```java
+    // 책 목록 조회 서비스
+    public RespBookPageDto<RespBooklistDto> booklist(int page, int limit) {
+
+        int offset = (page - 1) * limit;
+
+        List<Book> books = bookMapper.booklist(offset, limit);
+        Book searchBook = Book.builder().build();
+
+        int totalCount = bookMapper.countBooks(searchBook);
+        System.out.println(page);
+
+        List<RespBooklistDto> booklist = books.stream()
+                .map(book -> RespBooklistDto.builder()
+                        .id(book.getId())
+                        .title(book.getTitle())
+                        .author(book.getAuthor())
+                        .price(book.getPrice())
+                        .publisher(book.getPublisher())
+                        .img(book.getImg())
+                        .build())
+                .collect(Collectors.toList());
+        System.out.println(booklist);
+        System.out.println("Total count: " + totalCount);  // 총 책의 수 출력
+        System.out.println("Book list: " + booklist);     // 책 목록 출력
+
+        int pageCount = (int) Math.ceil((double) totalCount / (double) limit);
+
+
+        return RespBookPageDto.<RespBooklistDto>builder()
+                .books(booklist)
+                .totalCount(totalCount)
+                .pageCount(pageCount)
+                .pageSize(limit)
+                .build();
+    }
+```
+
+
+
+```java
+    // 책 수정 서비스
+    public int updateBook(ReqBookUpdateDto dto) {
+        // 중복 체크 로직
+        boolean isDuplicate = bookMapper.isBookDuplcateEdit(dto.getTitle(), dto.getId());
+        if (isDuplicate) {
+            throw new BookException("이미 존재하는 책입니다: ");
+        }
+
+        int successCount = bookMapper.updateBook(dto.toEntity());
+
+        if( successCount == 0) {
+            throw new BookException("도서를 수정하는 중 오류가 발생했습니다.");
+        }
+        
+        return successCount;
+    }
+```
+
+
+
+```java
+entity 구성
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Book {
+    private int id;
+    private String title;
+    private String author;
+    private String publisher;
+    private int price;
+    private String img;
+}
+```
+
+
+
+gitHub : https://github.com/qwdltjdals/RGT_Project
+
+프론트 배포 주소 : http://qw2645.dothome.co.kr/

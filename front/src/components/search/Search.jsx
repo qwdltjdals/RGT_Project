@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as s from "./style";
 
 function Search({ onSearch }) {
@@ -29,15 +29,18 @@ function Search({ onSearch }) {
             return;
         }
         onSearch(searchDto);
-        setSearchDto({ title: "", author: "" }); // 검색 후 searchDto 초기화
     };
 
     // 검색 취소 시 초기화
     const handleCancelSearch = () => {
         setSearchDto({ title: "", author: "" }); // searchDto 초기화
     };
-    
 
+    // searchType이 변경될 때 searchDto의 값을 초기화
+    useEffect(() => {
+        setSearchDto({ title: "", author: "" });
+    }, [searchType]);
+    
     return (
         <div css={s.searchBox}>
         <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
@@ -50,8 +53,8 @@ function Search({ onSearch }) {
             onChange={handleOnChange} // 입력값을 처리하는 함수 연결
             placeholder="검색어를 입력하세요"
         />
-        <button onClick={handleSearch}>검색</button>
-        <button onClick={handleCancelSearch}>검색 취소</button>
+            <button onClick={handleSearch}>검색</button>
+            <button onClick={handleCancelSearch}>검색 취소</button>
     </div>
     );
 }

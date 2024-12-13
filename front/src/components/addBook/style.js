@@ -1,24 +1,14 @@
 import { css } from "@emotion/react";
 
-export const searchBox = css`
+export const buttonBox = css`
     display: flex;
-    margin-bottom: 20px;
-    gap: 10px;
-
-    select {
-        border: 1px solid #dbdbdb;
-    }
-
-    input {
-        width: 400px;
-        padding: 5px;
-        border: 1px solid #dbdbdb;
-    }
-
-    button {
-        padding: 5px 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+    & > button {
         background-color: transparent;
         border: 1px solid #dbdbdb;
+        width: 100px;
+        height: 40px;
         &:hover {
             background-color: #dbdbdb
         }

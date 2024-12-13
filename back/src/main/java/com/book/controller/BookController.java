@@ -44,7 +44,6 @@ public class BookController {
     @PostMapping("/search")
     public ResponseEntity<?> searchBooks(@RequestBody ReqSearchBookDto dto) {
         RespBookPageDto<RespBookSearchDto> result = bookService.searchBooks(dto);
-        System.out.println(dto);
         return ResponseEntity.ok().body(result);
     }
 
