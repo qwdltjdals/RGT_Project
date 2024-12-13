@@ -13,6 +13,7 @@ import com.book.exception.BookException;
 import com.book.mapper.BookMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +43,6 @@ public class BookService {
         Book searchBook = Book.builder().build();
 
         int totalCount = bookMapper.countBooks(searchBook);
-        System.out.println(page);
 
         List<RespBooklistDto> booklist = books.stream()
                 .map(book -> RespBooklistDto.builder()
@@ -54,9 +54,6 @@ public class BookService {
                         .img(book.getImg())
                         .build())
                 .collect(Collectors.toList());
-        System.out.println(booklist);
-        System.out.println("Total count: " + totalCount);  // 총 책의 수 출력
-        System.out.println("Book list: " + booklist);     // 책 목록 출력
 
         int pageCount = (int) Math.ceil((double) totalCount / (double) limit);
 
@@ -70,14 +67,24 @@ public class BookService {
     }
 
     // 책 검색 서비스
+    @Transactional
     public RespBookPageDto<RespBookSearchDto> searchBooks(ReqSearchBookDto dto) {
 
         int offset = (dto.getPage() - 1) * dto.getLimit();
-
+        List<Book> books;
+        int totalCount;
         System.out.println(dto);
-        List<Book> books = bookMapper.searchBooks(dto.toEntity(), offset, dto.getLimit());
-
-        int totalCount = bookMapper.countBooks(dto.toEntity());
+        if (dto.getTitle() != null && !dto.getTitle().isEmpty()) {
+            // Title로 검색
+            books = bookMapper.searchByTitle(dto.getTitle(), offset, dto.getLimit());
+            totalCount = bookMapper.countByTitle(dto.getTitle());
+        } else if (dto.getAuthor() != null && !dto.getAuthor().isEmpty()) {
+            // Author로 검색
+            books = bookMapper.searchByAuthor(dto.getAuthor(), offset, dto.getLimit());
+            totalCount = bookMapper.countByAuthor(dto.getAuthor());
+        } else {
+            throw new IllegalArgumentException("검색 조건이 유효하지 않습니다.");
+        }
 
         List<RespBookSearchDto> searchBooks = books.stream()
                 .map(book -> RespBookSearchDto.builder()
@@ -112,6 +119,7 @@ public class BookService {
                 .publisher(book.getPublisher())
                 .price(book.getPrice())
                 .img(book.getImg())
+                .text(book.getText())
                 .build();
     }
 

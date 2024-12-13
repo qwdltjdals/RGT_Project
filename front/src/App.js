@@ -12,8 +12,8 @@ function App() {
       <Global styles={Reset} />
         <MainHeader />
         <Routes>
-            <Route path='/' element={<MainPage/>} />
-            <Route path='/' element={<DetailPage/>} />
+            <Route path="/*" element={<MainPage/>} />
+            <Route path="/detailPage/:id" element={<DetailPage />} />
         </Routes>
     </>
   );

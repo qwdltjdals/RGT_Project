@@ -12,7 +12,10 @@ public interface BookMapper {
     public int updateBook(Book book);
     public int deleteBook(int id);
     public List<Book> bookDetail(int id);
-    List<Book> searchBooks(@Param("book") Book book, @Param("offset") int offset, @Param("limit") int limit);
+    List<Book> searchByTitle(@Param("title") String title, @Param("offset") int offset, @Param("limit") int limit);
+    int countByTitle(@Param("title") String title);
+    List<Book> searchByAuthor(@Param("author") String author, @Param("offset") int offset, @Param("limit") int limit);
+    int countByAuthor(@Param("author") String author);
     int countBooks(@Param("book") Book book);
     List<Book> booklist(@Param("offset") int offset, @Param("limit") int limit);
     boolean isBookDuplicateCteate(@Param("title") String title);

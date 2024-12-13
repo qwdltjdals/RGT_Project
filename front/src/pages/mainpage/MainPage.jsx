@@ -6,6 +6,8 @@ import { useState } from "react";
 import Search from "../../components/search/Search";
 import AddBook from "../../components/addBook/AddBook";
 import EditBookModal from "../../modal/editBook/EditBookModal";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { QueryClient } from "@tanstack/react-query";
 
 function MainPage() {
     const [page, setPage] = useState(1);
@@ -13,6 +15,7 @@ function MainPage() {
     const [searchType, setSearchType] = useState("title");
     const [isSearching, setIsSearching] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
+    const navigate = useNavigate();
 
     const [bookIdToEdit, setBookIdToEdit] = useState(null); // 선택된 book의 id 저장
 
@@ -23,6 +26,10 @@ function MainPage() {
 
     const closeModal = () => {
         setOpenEditModal(false); // 모달 닫기
+    };
+
+    const handleImageClick = (bookId) => {
+        navigate(`/detailPage/${bookId}`); // 상세 페이지로 이동
     };
 
     // 전체조회하는 쿼리
@@ -39,13 +46,25 @@ function MainPage() {
             refetchOnWindowFocus: false
         }
     );
-
+    
     // 검색하는 쿼리
     const searchBooks = useMutation(
         async ({ page, limit, searchDto }) => {
-            const dto = {title: searchDto.title, author: searchDto.author, page, limit}
-            console.log(dto)
-            return await instance.post("api/books/search", dto);
+            const params = {
+                title: searchDto.title || "",
+                author: searchDto.author || "",
+                page,
+                limit
+            };
+            console.log(params);
+            return await instance.get("/api/books/search", { params });
+        },
+        {
+            onSuccess: (data) => {
+                console.log(data)
+                // 검색이 성공하면 `queryClient`를 사용하여 전체 책 리스트를 업데이트
+                QueryClient.setQueryData([allBooks, page, limit], data.data);
+            },
         }
     );
 
@@ -53,12 +72,7 @@ function MainPage() {
     const handleSearch = (searchDto) => {
         setIsSearching(true);
         searchBooks.mutate(
-            { searchDto, page, limit },
-            {
-                onSuccess: () => {
-                    setIsSearching(false);
-                }
-            }
+            { searchDto, page, limit }
         );
     };
 
@@ -131,6 +145,7 @@ function MainPage() {
                                     <img
                                         src={book.img}
                                         style={{ width: "100px", height: "100px" }}
+                                        onClick={() => handleImageClick(book.id)}
                                     />
                                 </td>
                                 <td>{book.author}</td>

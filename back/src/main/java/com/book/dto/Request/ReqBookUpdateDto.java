@@ -11,6 +11,7 @@ public class ReqBookUpdateDto {
     private String publisher;
     private int price;
     private String img;
+    private String text;
 
     public Book toEntity() {
         return Book.builder()
@@ -20,6 +21,7 @@ public class ReqBookUpdateDto {
                 .publisher(publisher)
                 .price(price)
                 .img(img)
+                .text(text)
                 .build();
     }
 }

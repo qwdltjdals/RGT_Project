@@ -13,4 +13,5 @@ public class RespBookDetailDto {
     private String publisher;
     private int price;
     private String img;
+    private String text;
 }

@@ -14,7 +14,7 @@
 
     <insert id="addBook">
         insert into book_tb
-        values(0, #{title}, #{author}, #{publisher}, #{price}, #{img})
+        values(0, #{title}, #{author}, #{publisher}, #{price}, #{img}, #{text})
     </insert>
     <update id="updateBook">
         update book_tb
@@ -23,7 +23,8 @@
             author = #{author},
             publisher = #{publisher},
             price = #{price},
-            img = #{img}
+            img = #{img},
+            text = #{text}
         where
             id = #{id}
     </update>
@@ -39,30 +40,35 @@
             author,
             publisher,
             price,
-            img
+            img,
+            text
         from
             book_tb
         where
             id = #{id}
     </select>
-    <select id="searchBooks" resultMap="BookResultMap">
+    <select id="searchByTitle" resultMap="BookResultMap">
         SELECT
-        id,
-        title,
-        author,
-        price,
-        publisher,
-        img
-        FROM books
-        <where>
-            <if test="dto.title != null and dto.title != ''">
-                AND title LIKE CONCAT('%', #{dto.title}, '%')
-            </if>
-            <if test="dto.author != null and dto.author != ''">
-                AND author LIKE CONCAT('%', #{dto.author}, '%')
-            </if>
-        </where>
-        LIMIT #{offset}, #{dto.limit}
+            id, title, author, price, publisher, img
+        FROM book_tb
+        WHERE title LIKE CONCAT('%', #{title}, '%')
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="searchByAuthor" resultMap="BookResultMap">
+        SELECT
+            id, title, author, price, publisher, img
+        FROM book_tb
+            WHERE author LIKE CONCAT('%', #{author}, '%')
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countByTitle" resultType="int">
+        SELECT COUNT(*) FROM book_tb WHERE title LIKE CONCAT('%', #{title}, '%')
+    </select>
+
+    <select id="countByAuthor" resultType="int">
+        SELECT COUNT(*) FROM book_tb WHERE author LIKE CONCAT('%', #{author}, '%')
     </select>
 
     <select id="countBooks" resultType="java.lang.Integer">
