@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 export const layout = css`
     width: 100%;
     height: 100px;
-    background-color: #3a3a3a;
+    background-color: #dbdbdb;
 `;
 
 export const mainBox = css`
