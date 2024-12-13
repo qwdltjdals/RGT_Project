@@ -41,8 +41,16 @@ public class BookController {
     }
 
     // 책 검색 컨트롤러
-    @PostMapping("/search")
-    public ResponseEntity<?> searchBooks(@RequestBody ReqSearchBookDto dto) {
+    @GetMapping("/search")
+    public ResponseEntity<?> searchBooks(@RequestParam(required = false) String title, @RequestParam(required = false) String author, @RequestParam int page, @RequestParam int limit) {
+        System.out.println("aaa");
+        ReqSearchBookDto dto = ReqSearchBookDto.builder()
+                .title(title)
+                .author(author)
+                .page(page)
+                .limit(limit)
+                .build();
+        System.out.println(dto);
         RespBookPageDto<RespBookSearchDto> result = bookService.searchBooks(dto);
         return ResponseEntity.ok().body(result);
     }

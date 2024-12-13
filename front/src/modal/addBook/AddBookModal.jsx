@@ -11,7 +11,8 @@ function AddBookModal({ isOpen, onClose, refetch}) {
         author: "",
         publisher: "",
         price: 0,
-        img: "https://media.istockphoto.com/id/949118068/ko/%EC%82%AC%EC%A7%84/%EB%8F%84%EC%84%9C%EB%8A%94.jpg?s=612x612&w=0&k=20&c=YDGPQQMQivmHg07-qdUiYgFF3cr3q4-7YTSkcVAS5m8="
+        img: "https://media.istockphoto.com/id/949118068/ko/%EC%82%AC%EC%A7%84/%EB%8F%84%EC%84%9C%EB%8A%94.jpg?s=612x612&w=0&k=20&c=YDGPQQMQivmHg07-qdUiYgFF3cr3q4-7YTSkcVAS5m8=",
+        text: ""
     })
 
     const handleBookOnChange = (e) => {
@@ -36,7 +37,8 @@ function AddBookModal({ isOpen, onClose, refetch}) {
                     author: "",
                     publisher: "",
                     price: 0,
-                    img: "https://media.istockphoto.com/id/949118068/ko/%EC%82%AC%EC%A7%84/%EB%8F%84%EC%84%9C%EB%8A%94.jpg?s=612x612&w=0&k=20&c=YDGPQQMQivmHg07-qdUiYgFF3cr3q4-7YTSkcVAS5m8="
+                    img: "https://media.istockphoto.com/id/949118068/ko/%EC%82%AC%EC%A7%84/%EB%8F%84%EC%84%9C%EB%8A%94.jpg?s=612x612&w=0&k=20&c=YDGPQQMQivmHg07-qdUiYgFF3cr3q4-7YTSkcVAS5m8=",
+                    text: ""
                 })
                 refetch();
             },
@@ -101,6 +103,10 @@ function AddBookModal({ isOpen, onClose, refetch}) {
                     <div css={s.inputBox}>
                         <label>가격</label>
                         <input type="text" name="price" value={book.price} onChange={handleBookOnChange} placeholder="가격을 입력해 주세요."/>
+                    </div>
+                    <div css={s.inputBox}>
+                        <label>설명</label>
+                        <textarea type="text" name="text" value={book.text} onChange={handleBookOnChange} placeholder="상세 설명을 적어주세요."/>
                     </div>
                 </div>
                 <div css={s.buttonBox}>

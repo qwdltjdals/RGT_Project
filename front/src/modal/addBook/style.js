@@ -30,6 +30,9 @@ export const inputBox = css`
         margin-left: 10px;
         padding-left: 10px;
     }
+    & > textarea {
+        width: 200px;
+    }
 `;
 
 export const buttonBox = css`

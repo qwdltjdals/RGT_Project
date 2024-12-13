@@ -25,10 +25,13 @@ export const mainTable = css`
   width: 1000px;
   text-align: center;
   border: 1px solid #dbdbdb;
+  & img {
+    cursor: pointer;
+  }
 `;
 
 export const page = css`
-  margin-top: 50px;
+  margin: 20px 0;
 `;
 
 export const buttonBox = css`

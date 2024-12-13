@@ -12,6 +12,7 @@ public class ReqAddBookDto {
     private String publisher;
     private int price;
     private String img;
+    private String text;
 
 
     public Book toEntity() {
@@ -21,6 +22,7 @@ public class ReqAddBookDto {
                 .publisher(publisher)
                 .price(price)
                 .img(img)
+                .text(text)
                 .build();
     }
 }
