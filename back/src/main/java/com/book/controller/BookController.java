@@ -37,7 +37,6 @@ public class BookController {
     @GetMapping("")
     public ResponseEntity<?> loadBooks(@RequestParam int page, @RequestParam int limit) {
         RespBookPageDto<RespBooklistDto> result = bookService.booklist(page, limit);
-        System.out.println("aaa");
         return ResponseEntity.ok().body(result);
     }
 
@@ -45,6 +44,7 @@ public class BookController {
     @PostMapping("/search")
     public ResponseEntity<?> searchBooks(@RequestBody ReqSearchBookDto dto) {
         RespBookPageDto<RespBookSearchDto> result = bookService.searchBooks(dto);
+        System.out.println(dto);
         return ResponseEntity.ok().body(result);
     }
 

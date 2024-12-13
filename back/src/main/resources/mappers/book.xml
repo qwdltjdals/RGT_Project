@@ -40,14 +40,14 @@
     <select id="searchBooks" resultType="com.book.entity.Book">
         select *
         FROM book_tb
-        WHERE
-        <if test="book.title != null and book.title != ''">
-            title LIKE CONCAT('%', #{book.title}, '%')
-        </if>
-        <if test="book.author != null and book.author != ''">
-            <if test="book.title != null and book.title != ''"> AND </if>
-            author LIKE CONCAT('%', #{book.author}, '%')
-        </if>
+        <where>
+            <if test="dto.title != null and dto.title != ''">
+                title LIKE CONCAT('%', #{dto.title}, '%')
+            </if>
+            <if test="dto.author != null and dto.author != ''">
+                and author LIKE CONCAT('%', #{dto.author}, '%')
+            </if>
+        </where>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

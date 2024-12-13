@@ -5,11 +5,6 @@ export const layout = css`
   height: 100%;
 `;
 
-export const searchBox = css`
-    display: flex;
-    margin: 0 auto;
-`;
-
 export const contentBox = css`
   display: flex;
   justify-content: center;
