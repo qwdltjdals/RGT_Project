@@ -6,6 +6,7 @@ import ManagementPage from './pages/managementPage/ManagementPage';
 import DetailPage from './pages/detailPage/DetailPage';
 import { Global } from '@emotion/react';
 import { Reset } from './style/style';
+import Search from './components/search/Search';
 
 function App() {
   return (
