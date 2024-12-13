@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/books")
-@CrossOrigin(origins = "*")  // 모든 출처에서 접근을 허용
 public class BookController {
 
     @Autowired
