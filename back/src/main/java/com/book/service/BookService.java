@@ -26,7 +26,7 @@ public class BookService {
     // 책 추가 서비스
     public void addBook(ReqAddBookDto dto) {
         // 중복 체크 로직
-        boolean isDuplicate = bookMapper.isBookDuplicate(dto.getTitle());
+        boolean isDuplicate = bookMapper.isBookDuplicateCteate(dto.getTitle());
         if (isDuplicate) {
             throw new BookException("이미 존재하는 책입니다: ");
         }
@@ -74,6 +74,7 @@ public class BookService {
 
         int offset = (dto.getPage() - 1) * dto.getLimit();
 
+        System.out.println(dto);
         List<Book> books = bookMapper.searchBooks(dto.toEntity(), offset, dto.getLimit());
 
         int totalCount = bookMapper.countBooks(dto.toEntity());
@@ -117,7 +118,7 @@ public class BookService {
     // 책 수정 서비스
     public int updateBook(ReqBookUpdateDto dto) {
         // 중복 체크 로직
-        boolean isDuplicate = bookMapper.isBookDuplicate(dto.getTitle());
+        boolean isDuplicate = bookMapper.isBookDuplcateEdit(dto.getTitle(), dto.getId());
         if (isDuplicate) {
             throw new BookException("이미 존재하는 책입니다: ");
         }
@@ -127,7 +128,6 @@ public class BookService {
         if( successCount == 0) {
             throw new BookException("도서를 수정하는 중 오류가 발생했습니다.");
         }
-
 
         return successCount;
     }

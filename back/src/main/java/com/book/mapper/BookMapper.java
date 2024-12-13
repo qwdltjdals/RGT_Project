@@ -15,5 +15,6 @@ public interface BookMapper {
     List<Book> searchBooks(@Param("book") Book book, @Param("offset") int offset, @Param("limit") int limit);
     int countBooks(@Param("book") Book book);
     List<Book> booklist(@Param("offset") int offset, @Param("limit") int limit);
-    boolean isBookDuplicate(@Param("title") String title);
+    boolean isBookDuplicateCteate(@Param("title") String title);
+    boolean isBookDuplcateEdit(@Param("title") String title, @Param("id") int id);
 }

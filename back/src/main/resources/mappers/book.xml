@@ -3,6 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.book.mapper.BookMapper">
+    <resultMap id="BookResultMap" type="com.book.entity.Book">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="author" column="author"/>
+        <result property="price" column="price"/>
+        <result property="publisher" column="publisher"/>
+        <result property="img" column="img"/>
+    </resultMap>
 
     <insert id="addBook">
         insert into book_tb
@@ -37,18 +45,24 @@
         where
             id = #{id}
     </select>
-    <select id="searchBooks" resultType="com.book.entity.Book">
-        select *
-        FROM book_tb
+    <select id="searchBooks" resultMap="BookResultMap">
+        SELECT
+        id,
+        title,
+        author,
+        price,
+        publisher,
+        img
+        FROM books
         <where>
             <if test="dto.title != null and dto.title != ''">
-                title LIKE CONCAT('%', #{dto.title}, '%')
+                AND title LIKE CONCAT('%', #{dto.title}, '%')
             </if>
             <if test="dto.author != null and dto.author != ''">
-                and author LIKE CONCAT('%', #{dto.author}, '%')
+                AND author LIKE CONCAT('%', #{dto.author}, '%')
             </if>
         </where>
-        LIMIT #{limit} OFFSET #{offset}
+        LIMIT #{offset}, #{dto.limit}
     </select>
 
     <select id="countBooks" resultType="java.lang.Integer">
@@ -70,11 +84,19 @@
             book_tb
         limit #{limit} OFFSET #{offset}
     </select>
-    <select id="isBookDuplicate" resultType="java.lang.Boolean">
+    <select id="isBookDuplicateCteate" resultType="java.lang.Boolean">
         SELECT EXISTS (
         SELECT 1
         FROM book_tb
         WHERE title = #{title}
+        )
+    </select>
+    <select id="isBookDuplcateEdit" resultType="java.lang.Boolean">
+        SELECT EXISTS (
+        SELECT 1
+        FROM book_tb
+        WHERE title = #{title}
+        AND id != #{id}  <!-- 현재 수정하려는 책은 제외 -->
         )
     </select>
 </mapper>
