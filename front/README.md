@@ -8,6 +8,8 @@ Visual Studio Code, InteliJ
 
 JAVA, JavaScript, CSS, React, SpringBoot, HTML
 
+자바 버전은 11버전 입니다.
+
 ## 주요 기능 설명
 
 1. 도서 목록 전체 조회 기능
